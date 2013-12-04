@@ -28,7 +28,7 @@ require(['even'], function( even ){
 </pre>
 
 ## Dependencies
-Even JS uses Helper JS wich makes vanilla JavaScript development smoother.
+Even JS uses [Helper JS](https://github.com/jrudenstam/helper-js) wich makes vanilla JavaScript development smoother.
 
 ## AMD
 Even JS will expose itself to window if require.js is not used. The helper dependency should work since Helper JS does the same.
