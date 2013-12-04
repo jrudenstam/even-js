@@ -14,13 +14,18 @@ Basic usage:
 </pre>
 Initalize Even JS
 <pre>
-even.init();
+require(['even'], function( even ){
+	even.init();
 
-// Or with settings
-even.init({
-	domClass: 'myEvenClass'
+	// Or with settings
+	even.init({
+		domClass: 'myEvenClass'
+	});
 });
 </pre>
 
 ## Dependencies
 Even JS uses Helper JS wich makes vanilla JavaScript development smoother.
+
+## AMD
+Even JS will expose itself to window if require.js is not used. The helper dependency should work since Helper JS does the same.
