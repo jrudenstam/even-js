@@ -1,5 +1,5 @@
 # Even JS
-Even JS is a vanilla module that will make elements same height.
+Even JS is a vanilla module that will make elements same height. Typically useful to make items in slider the same height or collumns with content.
 
 ## Usage
 You can optionally define groups with <code>data-even-group</code>-attribute to level different gruop on the same page.
@@ -17,9 +17,12 @@ Initalize Even JS
 require(['even'], function( even ){
 	even.init();
 
-	// Or with settings
+	// Or with settings if you need to replace 
+	// class name or disable recalculation on resize
 	even.init({
-		domClass: 'myEvenClass'
+		domClass: 'even',
+		dataGroup: 'data-even-group',
+		setOnResize: true
 	});
 });
 </pre>

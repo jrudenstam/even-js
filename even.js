@@ -19,8 +19,10 @@
 	var t, s; // Alias some stuff with these
 
 	return {
-		settings: {
-			domClass: 'even'
+		defaults: {
+			domClass: 'even',
+			dataGroup: 'data-even-group',
+			setOnResize: true
 		},
 
 		collection: {
@@ -30,9 +32,9 @@
 		init: function( settings ){
 			// Assingn aliases
 			t = this;
+			t.settings = helper.create(t.defaults); // Extend settings
 			s = t.settings;
 
-			// Extend defaults if settings are passed to the init
 			if (settings) {
 				for (var setting in settings) {
 					s[setting] = settings[setting];
@@ -42,12 +44,12 @@
 			// Get elements
 			var all = helper.getByClass(s.domClass, document, false);
 			for (var i = 0; i < all.length; i++) {
-				if ( helper.getAttribute(all[i], 'data-level-group') ) {
-					if ( t.collection[helper.getAttribute(all[i], 'data-level-group')] ) {
-						t.collection[helper.getAttribute(all[i], 'data-level-group')].push(all[i]);
+				if ( helper.getAttribute(all[i], s.dataGroup) ) {
+					if ( t.collection[helper.getAttribute(all[i], s.dataGroup)] ) {
+						t.collection[helper.getAttribute(all[i], s.dataGroup)].push(all[i]);
 					} else {
-						t.collection[helper.getAttribute(all[i], 'data-level-group')] = [];
-						t.collection[helper.getAttribute(all[i], 'data-level-group')].push(all[i]);
+						t.collection[helper.getAttribute(all[i], s.dataGroup)] = [];
+						t.collection[helper.getAttribute(all[i], s.dataGroup)].push(all[i]);
 					}
 				} else {
 					t.collection.noGroup.push(all[i]);
@@ -55,6 +57,14 @@
 			};
 
 			// Run the leveler
+			t.go();
+
+			if (s.setOnResize) {
+				helper.addEvent(window, 'resize', t.go, t);
+			}
+		},
+
+		go: function() {
 			for (var group in t.collection) {
 				t.level(t.collection[group]);
 			}
@@ -70,6 +80,9 @@
 			needLevel = false;
 
 			for (var i = nodeList.length - 1; i >= 0; i--) {
+				// Reset height if it´s already been set
+				nodeList[i].style.height = 'auto';
+
 				if (nodeList[i].clientHeight > higest) {
 					higest = nodeList[i].clientHeight;
 				}
