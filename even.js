@@ -11,7 +11,7 @@
 	"use strict";
 
 	if (typeof define === "function") {
-		define(['/js-helper/helper.js'], definition);
+		define(['/helper-js/helper.js'], definition);
 	} else {
 		ctx["even"] = definition;
 	}
@@ -22,7 +22,8 @@
 		defaults: {
 			domClass: 'even',
 			dataGroup: 'data-even-group',
-			setOnResize: true
+			setOnResize: true,
+			setTo: 'highest'
 		},
 
 		collection: {
@@ -76,28 +77,28 @@
 				return;
 			}
 			
-			var higest = 0,
-			needLevel = false;
+			var heights = {
+				highest: nodeList[0].clientHeight,
+				lowest: nodeList[0].clientHeight
+			};
 
 			for (var i = nodeList.length - 1; i >= 0; i--) {
 				// Reset height if it´s already been set
 				nodeList[i].style.height = 'auto';
 
-				if (nodeList[i].clientHeight > higest) {
-					higest = nodeList[i].clientHeight;
+				if (nodeList[i].clientHeight > heights.highest) {
+					heights.highest = nodeList[i].clientHeight;
 				}
 
-				if (nodeList[i].clientWidth < nodeList[i].parentNode.clientWidth) {
-					needLevel = true;
+				if (nodeList[i].clientHeight < heights.lowest) {
+					heights.lowest = nodeList[i].clientHeight;
 				}
 			};
 
-			if (!needLevel) {
-				return;
-			}
+			var target = heights[s.setTo] || heights.highest;
 
 			for (var i = nodeList.length - 1; i >= 0; i--) {
-				nodeList[i].style.height = higest + 'px';
+				nodeList[i].style.height = target + 'px';
 			};
 		}
 	}

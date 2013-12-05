@@ -1,3 +1,5 @@
 require(['../even'], function( even ){
-	even.init();
+	even.init({
+		setTo: 'lowest'
+	});
 });

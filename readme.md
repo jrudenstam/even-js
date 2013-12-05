@@ -22,7 +22,8 @@ require(['even'], function( even ){
 	even.init({
 		domClass: 'even',
 		dataGroup: 'data-even-group',
-		setOnResize: true
+		setOnResize: true,
+		setTo: 'highest'
 	});
 });
 </pre>
