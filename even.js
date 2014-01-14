@@ -16,6 +16,7 @@
 		ctx["even"] = definition;
 	}
 })(function( helper ){
+	helper = helper || window.helper; // Get the helper if not using AMD
 	var t, s; // Alias some stuff with these
 
 	return {
