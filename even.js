@@ -24,7 +24,8 @@
 			domClass: 'even',
 			dataGroup: 'data-even-group',
 			setOnResize: true,
-			setTo: 'highest'
+			setTo: 'highest',
+			disableAtOneCol: true
 		},
 
 		collection: {
@@ -87,6 +88,7 @@
 				// Reset height if it´s already been set
 				nodeList[i].style.height = 'auto';
 
+				// Set lowest and heigest vars
 				if (nodeList[i].clientHeight > heights.highest) {
 					heights.highest = nodeList[i].clientHeight;
 				}
@@ -99,7 +101,12 @@
 			var target = heights[s.setTo] || heights.highest;
 
 			for (var i = nodeList.length - 1; i >= 0; i--) {
-				nodeList[i].style.height = target + 'px';
+				var isOneCol = nodeList[i].clientWidth === nodeList[i].parentNode.clientWidth;
+
+				// Do not run even if were currently one col layout
+				if ( !isOneCol && !s.disableAtOneCol ) {
+					nodeList[i].style.height = target + 'px';
+				}
 			};
 		}
 	}
