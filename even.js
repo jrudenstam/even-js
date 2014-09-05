@@ -103,8 +103,9 @@
 			for (var i = nodeList.length - 1; i >= 0; i--) {
 				var isOneCol = nodeList[i].clientWidth === nodeList[i].parentNode.clientWidth;
 
-				// Do not run even if were currently one col layout
-				if ( !isOneCol && !s.disableAtOneCol ) {
+				// Run even if were not at one collumn layout, run it if at
+				// isOneCol and the 'disableAtOneCol' setting is set to false
+				if ( !isOneCol || isOneCol && !s.disableAtOneCol ) {
 					nodeList[i].style.height = target + 'px';
 				}
 			};
