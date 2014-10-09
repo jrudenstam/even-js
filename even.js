@@ -25,7 +25,9 @@
 			dataGroup: 'data-even-group',
 			setOnResize: true,
 			setTo: 'highest',
-			disableAtOneCol: true
+			disableAtOneCol: true,
+			onBeforeEven: false,
+			onAfterEven: false
 		},
 
 		collection: {
@@ -106,7 +108,15 @@
 				// Run even if were not at one collumn layout, run it if at
 				// isOneCol and the 'disableAtOneCol' setting is set to false
 				if ( !isOneCol || isOneCol && !s.disableAtOneCol ) {
+					if ( s.onBeforeEven ) {
+						s.onBeforeEven( nodeList[i] );
+					}
+
 					nodeList[i].style.height = target + 'px';
+
+					if ( s.onAfterEven ) {
+						s.onAfterEven( nodeList[i] );
+					}
 				}
 			};
 		}
