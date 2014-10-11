@@ -26,8 +26,9 @@
 			setOnResize: true,
 			setTo: 'highest',
 			disableAtOneCol: true,
-			onBeforeEven: false,
-			onAfterEven: false
+			onBeforeEven: undefined,
+			onAfterEven: undefined,
+			groups: undefined
 		},
 
 		collection: {
@@ -49,12 +50,13 @@
 			// Get elements
 			var all = helper.getByClass(s.domClass, document, false);
 			for (var i = 0; i < all.length; i++) {
-				if ( helper.getAttribute(all[i], s.dataGroup) ) {
-					if ( t.collection[helper.getAttribute(all[i], s.dataGroup)] ) {
-						t.collection[helper.getAttribute(all[i], s.dataGroup)].push(all[i]);
+				var groupName = helper.getAttribute(all[i], s.dataGroup);
+				if ( groupName ) {
+					if ( t.collection[groupName] ) {
+						t.collection[groupName].push(all[i]);
 					} else {
-						t.collection[helper.getAttribute(all[i], s.dataGroup)] = [];
-						t.collection[helper.getAttribute(all[i], s.dataGroup)].push(all[i]);
+						t.collection[groupName] = [];
+						t.collection[groupName].push(all[i]);
 					}
 				} else {
 					t.collection.noGroup.push(all[i]);
@@ -71,11 +73,11 @@
 
 		go: function() {
 			for (var group in t.collection) {
-				t.level(t.collection[group]);
+				t.level(t.collection[group], group);
 			}
 		},
 
-		level: function( nodeList ){
+		level: function( nodeList, group ){
 			// Escape quick if less than two elements are set to be equalized
 			if (nodeList.length < 2) {
 				return;
@@ -100,22 +102,27 @@
 				}
 			};
 
-			var target = heights[s.setTo] || heights.highest;
+			var target = heights[s.groups[group].setTo || s.setTo] || heights.highest;
 
 			for (var i = nodeList.length - 1; i >= 0; i--) {
-				var isOneCol = nodeList[i].clientWidth === nodeList[i].parentNode.clientWidth;
+				var parent = nodeList[i].parentNode,
+				parentStyle = window.getComputedStyle(parent),
+				parentPadding = parseInt(parentStyle.paddingLeft.split('px')[0], 10) + parseInt(parentStyle.paddingRight.split('px')[0], 10);
+				isOneCol = nodeList[i].clientWidth === (parent.clientWidth-parentPadding);
 
 				// Run even if were not at one collumn layout, run it if at
 				// isOneCol and the 'disableAtOneCol' setting is set to false
-				if ( !isOneCol || isOneCol && !s.disableAtOneCol ) {
-					if ( s.onBeforeEven ) {
-						s.onBeforeEven( nodeList[i] );
+				if ( !isOneCol || isOneCol && !(s.groups[group].disableAtOneCol || s.disableAtOneCol) ) {
+					if ( s.groups[group].onBeforeEven || s.onBeforeEven ) {
+						var cb = s.groups[group].onBeforeEven || s.onBeforeEven;
+						 cb( nodeList[i] );
 					}
 
 					nodeList[i].style.height = target + 'px';
 
-					if ( s.onAfterEven ) {
-						s.onAfterEven( nodeList[i] );
+					if ( s.groups[group].onAfterEven || s.onAfterEven ) {
+						var cb = s.groups[group].onAfterEven || s.onAfterEven;
+						cb( nodeList[i] );
 					}
 				}
 			};
