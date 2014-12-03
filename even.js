@@ -1,5 +1,5 @@
 /*
- * even JS v0.1
+ * even JS v0.12
  * Simple vanilla JS to make 
  * columns have equal height.
  *
@@ -11,7 +11,7 @@
 	"use strict";
 
 	if (typeof define === "function") {
-		define(['/helper-js/helper.js'], definition);
+		define(['../helper-js/helper'], definition);
 	} else {
 		ctx["even"] = definition;
 	}
@@ -77,6 +77,18 @@
 			}
 		},
 
+		getStyle: (function(){
+			if ( window.getComputedStyle ) {
+				return function ( elem, style ) {
+					return window.getComputedStyle(elem)[style];
+				}
+			} else {
+				return function ( elem, style ) {
+					return elem.currentStyle[style];
+				}
+			}
+		})(),
+
 		level: function( nodeList, group ){
 			// Escape quick if less than two elements are set to be equalized
 			if (nodeList.length < 2) {
@@ -102,26 +114,26 @@
 				}
 			};
 
-			var target = heights[s.groups[group].setTo || s.setTo] || heights.highest;
+			var target = heights[(s.groups[group] && s.groups[group].setTo) || s.setTo] || heights.highest;
 
 			for (var i = nodeList.length - 1; i >= 0; i--) {
 				var parent = nodeList[i].parentNode,
-				parentStyle = window.getComputedStyle(parent),
-				parentPadding = parseInt(parentStyle.paddingLeft.split('px')[0], 10) + parseInt(parentStyle.paddingRight.split('px')[0], 10);
-				isOneCol = nodeList[i].clientWidth === (parent.clientWidth-parentPadding);
+				parentPadding = parseInt(this.getStyle(parent, 'paddingLeft').split('px')[0], 10) + parseInt(this.getStyle(parent, 'paddingRight').split('px')[0], 10),
+				elemMargin = parseInt(this.getStyle(nodeList[i], 'marginLeft').split('px')[0], 10) + parseInt(this.getStyle(nodeList[i], 'marginRight').split('px')[0], 10),
+				isOneCol = nodeList[i].clientWidth === (parent.clientWidth-parentPadding-elemMargin);
 
 				// Run even if were not at one collumn layout, run it if at
 				// isOneCol and the 'disableAtOneCol' setting is set to false
-				if ( !isOneCol || isOneCol && !(s.groups[group].disableAtOneCol || s.disableAtOneCol) ) {
-					if ( s.groups[group].onBeforeEven || s.onBeforeEven ) {
-						var cb = s.groups[group].onBeforeEven || s.onBeforeEven;
+				if ( !isOneCol || isOneCol && !(s.groups[group] && s.groups[group].disableAtOneCol || s.disableAtOneCol) ) {
+					if ( (s.groups[group] && s.groups[group].onBeforeEven) || s.onBeforeEven ) {
+						var cb = (s.groups[group] && s.groups[group].onBeforeEven) || s.onBeforeEven;
 						 cb( nodeList[i] );
 					}
 
 					nodeList[i].style.height = target + 'px';
 
-					if ( s.groups[group].onAfterEven || s.onAfterEven ) {
-						var cb = s.groups[group].onAfterEven || s.onAfterEven;
+					if ( (s.groups[group] && s.groups[group].onAfterEven) || s.onAfterEven ) {
+						var cb = (s.groups[group] && s.groups[group].onAfterEven) || s.onAfterEven;
 						cb( nodeList[i] );
 					}
 				}
